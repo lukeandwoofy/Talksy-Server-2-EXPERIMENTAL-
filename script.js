@@ -1,11 +1,11 @@
 const firebaseConfig = {
-  apiKey: "AIzaSyBX23Wb2QQpdiS50Ta2grjxu8LELNlneww",
-  authDomain: "private-chat-4c475.firebaseapp.com",
-  databaseURL: "https://private-chat-4c475-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "private-chat-4c475",
-  storageBucket: "private-chat-4c475.firebasestorage.app",
-  messagingSenderId: "303322714070",
-  appId: "1:303322714070:web:4a1cc32e85bf5eec935e77"
+  apiKey: "AIzaSyD8MtPcQUY4zko5RfvQGPCliTEnLrOR21w",
+  authDomain: "private-chat-experimental.firebaseapp.com",
+  databaseURL: "https://private-chat-experimental-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "private-chat-experimental",
+  storageBucket: "private-chat-experimental.firebasestorage.app",
+  messagingSenderId: "775730349271",
+  appId: "1:775730349271:web:c14e0959a1303047df5c92"
 };
 
 // Import Firebase SDKs
