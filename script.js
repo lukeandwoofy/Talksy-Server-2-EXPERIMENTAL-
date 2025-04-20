@@ -1,9 +1,10 @@
+// Firebase Configuration
 const firebaseConfig = {
   apiKey: "AIzaSyD8MtPcQUY4zko5RfvQGPCliTEnLrOR21w",
   authDomain: "private-chat-experimental.firebaseapp.com",
   databaseURL: "https://private-chat-experimental-default-rtdb.europe-west1.firebasedatabase.app",
   projectId: "private-chat-experimental",
-  storageBucket: "private-chat-experimental.firebasestorage.app",
+  storageBucket: "private-chat-experimental.appspot.com",
   messagingSenderId: "775730349271",
   appId: "1:775730349271:web:c14e0959a1303047df5c92"
 };
@@ -34,6 +35,56 @@ const adminPanel = document.getElementById("admin-panel");
 const clearChatButton = document.getElementById("clear-chat-button");
 const toggleDarkModeButton = document.getElementById("toggle-dark-mode");
 
+// Music Player DOM Elements
+const audioPlayer = document.getElementById("audio-player");
+const audioSource = document.getElementById("audio-source");
+const playButton = document.getElementById("play-song");
+const pauseButton = document.getElementById("pause-song");
+const nextButton = document.getElementById("next-song");
+const currentSongDisplay = document.getElementById("current-song");
+
+// Music Player Variables
+const songs = [
+  { name: "Candyland", path: "assets/music/Candyland.mp3" },
+  { name: "Cloud 9", path: "assets/music/Cloud9.mp3" }
+];
+let currentSongIndex = 0;
+
+// Function to load a song
+function loadSong(index) {
+  const song = songs[index];
+  audioSource.src = song.path;
+  audioPlayer.load();
+  currentSongDisplay.textContent = `Now Playing: ${song.name}`;
+}
+
+// Event Listener for Play Button
+playButton.addEventListener("click", () => {
+  audioPlayer.play();
+  playButton.disabled = true;
+  pauseButton.disabled = false;
+});
+
+// Event Listener for Pause Button
+pauseButton.addEventListener("click", () => {
+  audioPlayer.pause();
+  playButton.disabled = false;
+  pauseButton.disabled = true;
+});
+
+// Event Listener for Next Button
+nextButton.addEventListener("click", () => {
+  currentSongIndex = (currentSongIndex + 1) % songs.length;
+  loadSong(currentSongIndex);
+  audioPlayer.play();
+  playButton.disabled = true;
+  pauseButton.disabled = false;
+});
+
+// Load the First Song Initially
+loadSong(currentSongIndex);
+
+// Chat App Logic
 let currentUserName = ""; // Store the current user's name
 let currentAccessCode = "A330"; // Default access code
 const adminPassword = "admin123"; // Admin password
