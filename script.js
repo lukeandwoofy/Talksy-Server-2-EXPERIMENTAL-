@@ -13,12 +13,41 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 
+// Join Chat Functionality
+const loginButton = document.getElementById("login-button");
+const nameInput = document.getElementById("name-input");
+const accessCodeInput = document.getElementById("access-code");
+
+loginButton.addEventListener("click", () => {
+  const username = nameInput.value.trim();
+  const accessCode = accessCodeInput.value.trim();
+
+  if (!username || !accessCode) {
+    document.getElementById("error-message").textContent = "Please enter both your name and the access code.";
+    return;
+  }
+
+  // Optional: Validate access code
+  if (accessCode !== "your-access-code") { // Replace with the actual access code or logic
+    document.getElementById("error-message").textContent = "Invalid access code.";
+    return;
+  }
+
+  // Switch to chat screen
+  document.getElementById("login-screen").style.display = "none";
+  document.getElementById("chat-screen").style.display = "block";
+
+  // Optional: Store user data in Firebase
+  database.ref("users").push({ username });
+
+  console.log(`${username} joined the chat.`);
+});
+
 // Chat Functionality
 const chatBox = document.getElementById("chat-box");
 const messageInput = document.getElementById("message-input");
 const sendButton = document.getElementById("send-button");
 
-// Send Message to Firebase
 sendButton.addEventListener("click", () => {
   const message = messageInput.value.trim();
   if (message) {
@@ -31,7 +60,6 @@ sendButton.addEventListener("click", () => {
   }
 });
 
-// Listen for New Messages
 database.ref("messages").on("child_added", (snapshot) => {
   const data = snapshot.val();
   const messageElement = document.createElement("div");
@@ -40,55 +68,3 @@ database.ref("messages").on("child_added", (snapshot) => {
   chatBox.appendChild(messageElement);
   chatBox.scrollTop = chatBox.scrollHeight; // Auto-scroll to the latest message
 });
-
-// Music Player Feature
-const songs = [
-  { name: "Candyland", path: "assets/music/Tobu - Candyland.mp3" },
-  { name: "Cloud 9", path: "assets/music/Itro & Tobu - Cloud 9.mp3" }
-];
-let currentSongIndex = 0;
-
-const audioPlayer = document.getElementById("audio-player");
-const audioSource = document.getElementById("audio-source");
-const playButton = document.getElementById("play-song");
-const pauseButton = document.getElementById("pause-song");
-const nextButton = document.getElementById("next-song");
-const currentSongDisplay = document.getElementById("current-song");
-
-// Function to load a song
-function loadSong(index) {
-  const song = songs[index];
-  audioSource.src = song.path;
-  audioPlayer.load();
-  currentSongDisplay.textContent = `Now Playing: ${song.name}`;
-}
-
-// Event Listener for Play Button
-playButton.addEventListener("click", () => {
-  audioPlayer.play().catch(error => {
-    console.error("Error playing audio:", error);
-  });
-  playButton.disabled = true;
-  pauseButton.disabled = false;
-});
-
-// Event Listener for Pause Button
-pauseButton.addEventListener("click", () => {
-  audioPlayer.pause();
-  playButton.disabled = false;
-  pauseButton.disabled = true;
-});
-
-// Event Listener for Next Button
-nextButton.addEventListener("click", () => {
-  currentSongIndex = (currentSongIndex + 1) % songs.length;
-  loadSong(currentSongIndex);
-  audioPlayer.play().catch(error => {
-    console.error("Error playing next song:", error);
-  });
-  playButton.disabled = true;
-  pauseButton.disabled = false;
-});
-
-// Load the First Song Initially
-loadSong(currentSongIndex);
