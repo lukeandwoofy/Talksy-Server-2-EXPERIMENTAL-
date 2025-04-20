@@ -17,30 +17,34 @@ const database = firebase.database();
 const loginButton = document.getElementById("login-button");
 const nameInput = document.getElementById("name-input");
 const accessCodeInput = document.getElementById("access-code");
+const errorMessage = document.getElementById("error-message");
+const loginScreen = document.getElementById("login-screen");
+const chatScreen = document.getElementById("chat-screen");
 
 loginButton.addEventListener("click", () => {
   const username = nameInput.value.trim();
   const accessCode = accessCodeInput.value.trim();
 
   if (!username || !accessCode) {
-    document.getElementById("error-message").textContent = "Please enter both your name and the access code.";
+    errorMessage.textContent = "Please enter both your name and the access code.";
     return;
   }
 
-  // Optional: Validate access code
-  if (accessCode !== "your-access-code") { // Replace with the actual access code or logic
-    document.getElementById("error-message").textContent = "Invalid access code.";
+  const validAccessCode = "your-access-code"; // Replace with the actual access code
+  if (accessCode !== validAccessCode) {
+    errorMessage.textContent = "Invalid access code. Please try again.";
     return;
   }
 
-  // Switch to chat screen
-  document.getElementById("login-screen").style.display = "none";
-  document.getElementById("chat-screen").style.display = "block";
+  loginScreen.style.display = "none";
+  chatScreen.style.display = "block";
 
-  // Optional: Store user data in Firebase
-  database.ref("users").push({ username });
-
-  console.log(`${username} joined the chat.`);
+  database.ref("users").push({ username }).then(() => {
+    console.log(`${username} joined the chat.`);
+  }).catch((error) => {
+    console.error("Error storing user in Firebase:", error);
+    errorMessage.textContent = "An error occurred while joining the chat.";
+  });
 });
 
 // Chat Functionality
@@ -56,7 +60,7 @@ sendButton.addEventListener("click", () => {
       message,
       timestamp
     });
-    messageInput.value = ""; // Clear input
+    messageInput.value = "";
   }
 });
 
@@ -66,5 +70,52 @@ database.ref("messages").on("child_added", (snapshot) => {
   messageElement.classList.add("message", "received");
   messageElement.textContent = `${new Date(data.timestamp).toLocaleTimeString()}: ${data.message}`;
   chatBox.appendChild(messageElement);
-  chatBox.scrollTop = chatBox.scrollHeight; // Auto-scroll to the latest message
+  chatBox.scrollTop = chatBox.scrollHeight;
 });
+
+// Music Player Feature
+const songs = [
+  { name: "Candyland", path: "assets/music/Tobu - Candyland.mp3" },
+  { name: "Cloud 9", path: "assets/music/Itro & Tobu - Cloud 9.mp3" }
+];
+let currentSongIndex = 0;
+
+const audioPlayer = document.getElementById("audio-player");
+const audioSource = document.getElementById("audio-source");
+const playButton = document.getElementById("play-song");
+const pauseButton = document.getElementById("pause-song");
+const nextButton = document.getElementById("next-song");
+const currentSongDisplay = document.getElementById("current-song");
+
+function loadSong(index) {
+  const song = songs[index];
+  audioSource.src = song.path;
+  audioPlayer.load();
+  currentSongDisplay.textContent = `Now Playing: ${song.name}`;
+}
+
+playButton.addEventListener("click", () => {
+  audioPlayer.play().catch(error => {
+    console.error("Error playing audio:", error);
+  });
+  playButton.disabled = true;
+  pauseButton.disabled = false;
+});
+
+pauseButton.addEventListener("click", () => {
+  audioPlayer.pause();
+  playButton.disabled = false;
+  pauseButton.disabled = true;
+});
+
+nextButton.addEventListener("click", () => {
+  currentSongIndex = (currentSongIndex + 1) % songs.length;
+  loadSong(currentSongIndex);
+  audioPlayer.play().catch(error => {
+    console.error("Error playing next song:", error);
+  });
+  playButton.disabled = true;
+  pauseButton.disabled = false;
+});
+
+loadSong(currentSongIndex);
