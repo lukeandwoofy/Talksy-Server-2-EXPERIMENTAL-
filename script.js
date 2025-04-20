@@ -32,7 +32,7 @@ loginButton.addEventListener("click", () => {
     return;
   }
 
-  const validAccessCode = "your-access-code"; // Replace with the actual access code
+  const validAccessCode = "A330"; // Replace with the actual access code
   if (accessCode !== validAccessCode) {
     errorMessage.textContent = "Invalid access code. Please try again.";
     return;
