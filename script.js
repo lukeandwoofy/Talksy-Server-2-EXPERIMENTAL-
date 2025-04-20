@@ -30,7 +30,7 @@ loginButton.addEventListener("click", () => {
     return;
   }
 
-  const validAccessCode = "your-access-code"; // Replace with the actual access code
+  const validAccessCode = "A330"; // Replace with the actual access code
   if (accessCode !== validAccessCode) {
     errorMessage.textContent = "Invalid access code. Please try again.";
     return;
@@ -119,3 +119,30 @@ nextButton.addEventListener("click", () => {
 });
 
 loadSong(currentSongIndex);
+
+// Admin Panel Functionality
+const adminButton = document.getElementById("admin-button");
+const adminPanel = document.getElementById("admin-panel");
+const clearChatButton = document.getElementById("clear-chat-button");
+
+adminButton.addEventListener("click", () => {
+  adminPanel.style.display = adminPanel.style.display === "none" ? "block" : "none";
+});
+
+clearChatButton.addEventListener("click", () => {
+  database.ref("messages").remove()
+    .then(() => {
+      chatBox.innerHTML = "";
+      console.log("Chat cleared by admin.");
+    })
+    .catch(error => {
+      console.error("Error clearing chat:", error);
+    });
+});
+
+// Dark Mode Functionality
+const darkModeButton = document.getElementById("toggle-dark-mode");
+
+darkModeButton.addEventListener("click", () => {
+  document.body.classList.toggle("dark-mode");
+});
