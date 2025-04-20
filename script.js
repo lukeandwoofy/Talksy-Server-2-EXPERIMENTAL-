@@ -21,6 +21,8 @@ const errorMessage = document.getElementById("error-message");
 const loginScreen = document.getElementById("login-screen");
 const chatScreen = document.getElementById("chat-screen");
 
+let currentUser = ""; // Store the current user's name
+
 loginButton.addEventListener("click", () => {
   const username = nameInput.value.trim();
   const accessCode = accessCodeInput.value.trim();
@@ -30,12 +32,13 @@ loginButton.addEventListener("click", () => {
     return;
   }
 
-  const validAccessCode = "A330"; // Replace with the actual access code
+  const validAccessCode = "your-access-code"; // Replace with the actual access code
   if (accessCode !== validAccessCode) {
     errorMessage.textContent = "Invalid access code. Please try again.";
     return;
   }
 
+  currentUser = username; // Set the current user
   loginScreen.style.display = "none";
   chatScreen.style.display = "block";
 
@@ -58,7 +61,8 @@ sendButton.addEventListener("click", () => {
     const timestamp = Date.now();
     database.ref("messages").push({
       message,
-      timestamp
+      timestamp,
+      sender: currentUser // Include the sender's name
     });
     messageInput.value = "";
   }
@@ -67,10 +71,20 @@ sendButton.addEventListener("click", () => {
 database.ref("messages").on("child_added", (snapshot) => {
   const data = snapshot.val();
   const messageElement = document.createElement("div");
-  messageElement.classList.add("message", "received");
-  messageElement.textContent = `${new Date(data.timestamp).toLocaleTimeString()}: ${data.message}`;
+  messageElement.classList.add("message");
+
+  if (data.sender === currentUser) {
+    // Message sent by the current user
+    messageElement.classList.add("sent");
+    messageElement.textContent = `${data.message}`;
+  } else {
+    // Message received from someone else
+    messageElement.classList.add("received");
+    messageElement.textContent = `${data.sender}: ${data.message}`;
+  }
+
   chatBox.appendChild(messageElement);
-  chatBox.scrollTop = chatBox.scrollHeight;
+  chatBox.scrollTop = chatBox.scrollHeight; // Auto-scroll to the latest message
 });
 
 // Music Player Feature
@@ -126,7 +140,14 @@ const adminPanel = document.getElementById("admin-panel");
 const clearChatButton = document.getElementById("clear-chat-button");
 
 adminButton.addEventListener("click", () => {
-  adminPanel.style.display = adminPanel.style.display === "none" ? "block" : "none";
+  const adminPassword = prompt("Enter admin password:");
+  const validAdminPassword = "admin123"; // Replace with the actual admin password
+
+  if (adminPassword === validAdminPassword) {
+    adminPanel.style.display = adminPanel.style.display === "none" ? "block" : "none";
+  } else {
+    alert("Incorrect password. Access denied.");
+  }
 });
 
 clearChatButton.addEventListener("click", () => {
