@@ -5,17 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Private Chat</title>
   <link rel="stylesheet" href="style.css">
-
+  
   <!-- Firebase Compatibility Scripts -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-  <!-- Emoji Picker Library -->
-  <script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@5.2.2/dist/index.min.js"></script>
 </head>
 <body>
-  <!-- Page Content -->
   <div id="login-screen">
+    <!-- Added logo to the login screen -->
     <img id="login-logo" src="assets/images/logo.png" alt="Logo">
     <h1>Talksy</h1>
     <p>Enter your name and the special code to join:</p>
@@ -34,10 +32,9 @@
     <div id="chat-box"></div>
     <div id="chat-input">
       <input type="text" id="message-input" placeholder="Type a message...">
-      <button id="emoji-button">😊</button>
       <button id="send-button">Send</button>
     </div>
-    <p id="typing-indicator" style="display: none;">Typing...</p>
+    <p id="typing-indicator"></p>
   </div>
 
   <div id="admin-panel" style="display: none;">
@@ -60,7 +57,6 @@
     <p id="current-song">Now Playing: Candyland</p>
   </div>
 
-  <!-- Main Script -->
-  <script src="script.js"></script>
+  <script type="module" src="script.js"></script>
 </body>
 </html>
