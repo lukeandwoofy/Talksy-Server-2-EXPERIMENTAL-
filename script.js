@@ -1,19 +1,28 @@
-// Firebase Configuration
+// Firebase configuration (replace with your own configuration from Firebase Console)
 const firebaseConfig = {
-  apiKey: "AIzaSyD8MtPcQUY4zko5RfvQGPCliTEnLrOR21w",
-  authDomain: "private-chat-experimental.firebaseapp.com",
-  databaseURL: "https://private-chat-experimental-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "private-chat-experimental",
-  storageBucket: "private-chat-experimental.appspot.com",
-  messagingSenderId: "775730349271",
-  appId: "1:775730349271:web:c14e0959a1303047df5c92"
+  apiKey: "AIzaSyBX23Wb2QQpdiS50Ta2grjxu8LELNlneww",
+  authDomain: "private-chat-4c475.firebaseapp.com",
+  databaseURL: "https://private-chat-4c475-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "private-chat-4c475",
+  storageBucket: "private-chat-4c475.firebasestorage.app",
+  messagingSenderId: "303322714070",
+  appId: "1:303322714070:web:4a1cc32e85bf5eec935e77"
 };
 
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 
-// Login Feature
+// Authenticate user anonymously
+firebase.auth().signInAnonymously()
+  .then(() => {
+    console.log("User signed in anonymously");
+  })
+  .catch((error) => {
+    console.error("Error during anonymous sign-in:", error);
+  });
+
+// Join Chat Functionality
 const loginButton = document.getElementById("login-button");
 const nameInput = document.getElementById("name-input");
 const accessCodeInput = document.getElementById("access-code");
@@ -42,7 +51,8 @@ loginButton.addEventListener("click", () => {
   loginScreen.style.display = "none";
   chatScreen.style.display = "block";
 
-  database.ref("users").push({ username }).then(() => {
+  const userId = firebase.auth().currentUser.uid; // Get the anonymous user ID
+  database.ref("users/" + userId).set({ username }).then(() => {
     console.log(`${username} joined the chat.`);
   }).catch((error) => {
     console.error("Error storing user in Firebase:", error);
@@ -55,18 +65,6 @@ const chatBox = document.getElementById("chat-box");
 const messageInput = document.getElementById("message-input");
 const sendButton = document.getElementById("send-button");
 
-// Typing Indicator
-const typingIndicator = document.getElementById("typing-indicator");
-
-messageInput.addEventListener("input", () => {
-  typingIndicator.style.display = "block";
-  clearTimeout(typingIndicator.timeout);
-
-  typingIndicator.timeout = setTimeout(() => {
-    typingIndicator.style.display = "none";
-  }, 2000);
-});
-
 sendButton.addEventListener("click", () => {
   const message = messageInput.value.trim();
   if (message) {
@@ -74,7 +72,9 @@ sendButton.addEventListener("click", () => {
     database.ref("messages").push({
       message,
       timestamp,
-      sender: currentUser
+      sender: currentUser // Include the sender's name
+    }).catch((error) => {
+      console.error("Error sending message:", error);
     });
     messageInput.value = "";
   }
@@ -86,26 +86,18 @@ database.ref("messages").on("child_added", (snapshot) => {
   messageElement.classList.add("message");
 
   if (data.sender === currentUser) {
+    // Message sent by the current user
     messageElement.classList.add("sent");
     messageElement.textContent = `${data.message}`;
   } else {
+    // Message received from someone else
     messageElement.classList.add("received");
     messageElement.textContent = `${data.sender}: ${data.message}`;
   }
 
   chatBox.appendChild(messageElement);
-  chatBox.scrollTop = chatBox.scrollHeight;
+  chatBox.scrollTop = chatBox.scrollHeight; // Auto-scroll to the latest message
 });
-
-// Emoji Picker
-const emojiButton = document.getElementById("emoji-button");
-const picker = new EmojiButton();
-
-picker.on("emoji", (emoji) => {
-  messageInput.value += emoji;
-});
-
-emojiButton.addEventListener("click", () => picker.togglePicker(emojiButton));
 
 // Music Player Feature
 const songs = [
@@ -129,7 +121,7 @@ function loadSong(index) {
 }
 
 playButton.addEventListener("click", () => {
-  audioPlayer.play().catch((error) => {
+  audioPlayer.play().catch(error => {
     console.error("Error playing audio:", error);
   });
   playButton.disabled = true;
@@ -145,7 +137,7 @@ pauseButton.addEventListener("click", () => {
 nextButton.addEventListener("click", () => {
   currentSongIndex = (currentSongIndex + 1) % songs.length;
   loadSong(currentSongIndex);
-  audioPlayer.play().catch((error) => {
+  audioPlayer.play().catch(error => {
     console.error("Error playing next song:", error);
   });
   playButton.disabled = true;
@@ -154,7 +146,7 @@ nextButton.addEventListener("click", () => {
 
 loadSong(currentSongIndex);
 
-// Admin Panel
+// Admin Panel Functionality
 const adminButton = document.getElementById("admin-button");
 const adminPanel = document.getElementById("admin-panel");
 const clearChatButton = document.getElementById("clear-chat-button");
@@ -176,12 +168,12 @@ clearChatButton.addEventListener("click", () => {
       chatBox.innerHTML = "";
       console.log("Chat cleared by admin.");
     })
-    .catch((error) => {
+    .catch(error => {
       console.error("Error clearing chat:", error);
     });
 });
 
-// Dark Mode
+// Dark Mode Functionality
 const darkModeButton = document.getElementById("toggle-dark-mode");
 
 darkModeButton.addEventListener("click", () => {
