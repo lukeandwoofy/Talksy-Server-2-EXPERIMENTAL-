@@ -5,13 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Private Chat</title>
   <link rel="stylesheet" href="style.css">
-  
+
   <!-- Firebase Compatibility Scripts -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <!-- Emoji Picker Library -->
+  <script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@5.2.2/dist/index.min.js"></script>
 </head>
 <body>
+  <!-- Login Screen -->
   <div id="login-screen">
     <!-- Added logo to the login screen -->
     <img id="login-logo" src="assets/images/logo.png" alt="Logo">
@@ -23,6 +26,7 @@
     <p id="error-message"></p>
   </div>
 
+  <!-- Chat Screen -->
   <div id="chat-screen" style="display: none;">
     <div id="chat-header">
       <h1>Welcome to Talksy</h1>
@@ -32,11 +36,15 @@
     <div id="chat-box"></div>
     <div id="chat-input">
       <input type="text" id="message-input" placeholder="Type a message...">
+      <!-- Added Emoji Picker Button -->
+      <button id="emoji-button">😊</button>
       <button id="send-button">Send</button>
     </div>
-    <p id="typing-indicator"></p>
+    <!-- Typing Indicator -->
+    <p id="typing-indicator" style="display: none;">Typing...</p>
   </div>
 
+  <!-- Admin Panel -->
   <div id="admin-panel" style="display: none;">
     <h2>Admin Panel</h2>
     <button id="clear-chat-button">Clear All Messages</button>
