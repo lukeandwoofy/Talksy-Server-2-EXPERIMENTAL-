@@ -153,3 +153,37 @@ nextButton.addEventListener("click", () => {
 });
 
 loadSong(currentSongIndex);
+
+// Admin Panel
+const adminButton = document.getElementById("admin-button");
+const adminPanel = document.getElementById("admin-panel");
+const clearChatButton = document.getElementById("clear-chat-button");
+
+adminButton.addEventListener("click", () => {
+  const adminPassword = prompt("Enter admin password:");
+  const validAdminPassword = "admin123"; // Replace with the actual admin password
+
+  if (adminPassword === validAdminPassword) {
+    adminPanel.style.display = adminPanel.style.display === "none" ? "block" : "none";
+  } else {
+    alert("Incorrect password. Access denied.");
+  }
+});
+
+clearChatButton.addEventListener("click", () => {
+  database.ref("messages").remove()
+    .then(() => {
+      chatBox.innerHTML = "";
+      console.log("Chat cleared by admin.");
+    })
+    .catch((error) => {
+      console.error("Error clearing chat:", error);
+    });
+});
+
+// Dark Mode
+const darkModeButton = document.getElementById("toggle-dark-mode");
+
+darkModeButton.addEventListener("click", () => {
+  document.body.classList.toggle("dark-mode");
+});
